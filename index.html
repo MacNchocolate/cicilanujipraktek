@@ -64,6 +64,7 @@ nav ul a:hover{border-color:var(--g)}
 @keyframes pop{from{opacity:0;transform:scale(.94)}}
 .img{height:170px;background:repeating-linear-gradient(45deg,#101a05 0 12px,#0b0b0b 12px 24px);position:relative;overflow:hidden}
 .img::after{content:attr(data-cap);position:absolute;inset:auto 0 0;padding:10px 14px;font-size:13px;color:var(--g);background:linear-gradient(transparent,rgba(0,0,0,.8))}
+.img svg{position:absolute;inset:0;width:100%;height:100%}.bk{animation:bk 1.6s infinite}@keyframes bk{50%{opacity:.15}}
 .img img{width:100%;height:100%;object-fit:cover;position:relative;z-index:1;transition:transform .6s}
 .card:hover .img img,.shot:hover img{transform:scale(1.08)}
 .card div.tx{padding:20px 22px 26px}
@@ -82,6 +83,22 @@ ul.ck li::before{content:"";position:absolute;left:4px;top:19px;width:14px;heigh
 #sim rect{fill:#141414;stroke:#3a3a3a;stroke-width:2;transition:.25s}
 #sim rect.on{stroke:var(--g);fill:#1c2a05}
 #log{font:14px/1.7 Consolas,monospace;color:#b5e04a;height:112px;overflow:hidden;margin-top:14px}
+/* osi 3d */
+.sc{height:470px;perspective:1100px;display:grid;place-items:center}
+.stack{position:relative;width:300px;height:190px;transform-style:preserve-3d;transform:rotateX(60deg) rotateZ(-38deg);transition:transform .25s ease-out}
+.pl{position:absolute;inset:0;border:2px solid #3a3a3a;background:rgba(118,185,0,.05);transform:translateZ(var(--z));transition:all .45s;cursor:pointer;display:flex;align-items:flex-end;padding:8px 12px;font-weight:700;font-size:15px;color:#bbb}
+.pl:hover{border-color:#6a8f1c}
+.pl.on{border-color:var(--g);background:rgba(118,185,0,.25);color:#fff;box-shadow:0 0 34px rgba(118,185,0,.4)}
+.pl.sel{transform:translateZ(var(--z)) translate(-46px,46px)}
+.pk3{position:absolute;left:50%;top:50%;height:30px;background:#c8ff3d;box-shadow:0 0 26px var(--g),0 0 4px #fff inset;transition:transform .7s cubic-bezier(.5,0,.3,1),width .5s,margin .5s;pointer-events:none}
+.pdu{display:inline-block;background:var(--g);color:#000;font-weight:800;padding:3px 12px;margin:14px 0 10px}
+#oi p{color:var(--m);min-height:84px}
+/* globe */
+.hg{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:center}
+.gb{aspect-ratio:1;width:100%;max-width:540px;margin:0 auto;pointer-events:none}
+#gl{width:100%;height:100%;display:block}
+#hero .hg h1{font-size:clamp(40px,6vw,84px)}
+@media(max-width:900px){.hg{grid-template-columns:1fr}.gb{max-width:340px}}
 /* terminal */
 .term{background:#0a0a0a;border:1px solid var(--l);box-shadow:0 0 0 1px #000,0 30px 60px rgba(118,185,0,.08)}
 .term .bar{display:flex;gap:7px;padding:12px 14px;background:#1b1b1b}.term .bar i{width:11px;height:11px;border-radius:50%;background:#444}
@@ -129,17 +146,17 @@ footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
 
 <nav><div class="w">
   <a href="#hero" class="logo"><i></i>TKJ Lab</a>
-  <ul><li><a href="#materi">Materi</a></li><li><a href="#jaringan">Jaringan</a></li><li><a href="#linux">Linux</a></li><li><a href="#coding">Coding</a></li><li><a href="#kabel">Kabel LAN</a></li><li><a href="#galeri">Praktik</a></li></ul>
+  <ul><li><a href="#materi">Materi</a></li><li><a href="#jaringan">Jaringan</a></li><li><a href="#osi">OSI 3D</a></li><li><a href="#linux">Linux</a></li><li><a href="#coding">Coding</a></li><li><a href="#kabel">Kabel LAN</a></li><li><a href="#galeri">Praktik</a></li></ul>
   <a href="#saran" class="btn" style="padding:9px 22px;font-size:15px"><span>Kirim saran</span></a>
 </div></nav>
 
 <header id="hero">
   <canvas id="net"></canvas>
-  <div class="w">
+  <div class="w hg"><div class="ht">
     <h1><span class="hl"><b>Dari kabel LAN</b></span><span class="hl"><b>sampai server,</b></span><span class="hl"><b>semua kamu <em>kuasai.</em></b></span></h1>
     <p>Catatan belajar Teknik Komputer dan Jaringan: coding, administrasi server Linux, konsep jaringan, dan praktik perangkat keras. Gerakkan kursor, simpul jaringan di belakang akan mengikuti.</p>
     <div class="bt"><a href="#materi" class="btn"><span>Mulai belajar</span></a><a href="#kabel" class="btn o"><span>Coba susun kabel</span></a></div>
-  </div>
+  </div><div class="gb"><canvas id="gl"></canvas></div></div>
 </header>
 
 <div class="stats"><div class="w">
@@ -172,7 +189,17 @@ footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
   </div>
 </div></section>
 
-<section id="linux"><div class="w sp">
+<section id="osi"><div class="w sp">
+  <div>
+    <h2>OSI 3D</h2>
+    <p class="lead" style="margin-bottom:22px">Tujuh lapisan jaringan dalam bentuk tumpukan. Gerakkan kursor untuk memutar, klik lapisan untuk menggesernya keluar, atau kirim data dan lihat paketnya makin tebal tiap turun satu lapisan.</p>
+    <div id="oi"><h3 id="oh">Pilih satu lapisan</h3><span class="pdu" id="op">PDU</span><p id="od">Setiap lapisan menambahkan header miliknya sebelum data diteruskan ke bawah.</p></div>
+    <button class="btn" id="osend"><span>Kirim data</span></button>
+  </div>
+  <div class="sc" id="sc"><div class="stack" id="stk"></div></div>
+</div></section>
+
+<section id="linux" class="dark"><div class="w sp">
   <div class="term"><div class="bar"><i></i><i></i><i></i></div><pre id="tm"></pre></div>
   <div>
     <h2>Server Linux</h2>
@@ -181,13 +208,13 @@ footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
   </div>
 </div></section>
 
-<section id="coding" class="dark"><div class="w">
+<section id="coding"><div class="w">
   <h2>Coding</h2>
   <p class="lead">Skrip kecil yang menghemat jam kerja seorang admin jaringan. Pilih bahasa di bawah.</p>
   <div class="tabs" id="tabs"></div><pre id="code"></pre>
 </div></section>
 
-<section id="kabel"><div class="w sp">
+<section id="kabel" class="dark"><div class="w sp">
   <div class="rj">
     <div class="wires" id="wires"></div>
     <div class="pin"></div>
@@ -209,13 +236,13 @@ footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
   </div>
 </div></section>
 
-<section id="galeri" class="dark"><div class="w">
+<section id="galeri"><div class="w">
   <h2>Dokumentasi praktik</h2>
-  <p class="lead">Foto alat dan perangkat yang akan kamu pegang langsung di lab.</p>
+  <p class="lead">Alat dan perangkat yang akan kamu pegang langsung di lab.</p>
   <div class="gal" id="gal"></div>
 </div></section>
 
-<section><div class="w">
+<section class="dark"><div class="w">
   <h2>Jalur belajar</h2>
   <p class="lead">Urutan materi dari kelas X sampai XII.</p>
   <div class="road" id="road">
@@ -225,19 +252,19 @@ footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
   </div>
 </div></section>
 
-<section id="saran" class="dark"><div class="w">
+<section id="saran"><div class="w">
   <h2>Kirim saran materi</h2>
   <p class="lead">Ada topik yang belum ada di sini? Tulis di bawah. Pesanmu tersimpan di database Supabase.</p>
   <form id="f"><input id="nm" placeholder="Nama" maxlength="60" required><textarea id="ps" rows="4" placeholder="Topik yang ingin ditambahkan" maxlength="500" required></textarea>
   <button class="btn" type="submit" style="justify-self:start"><span>Kirim</span></button><div id="fm"></div></form>
 </div></section>
 
-<footer><div class="w"><span>TKJ Lab. Dibuat untuk belajar bersama.</span><span>Gambar dari Wikimedia Commons, lisensi mengikuti masing-masing berkas.</span></div></footer>
+<footer><div class="w"><span>TKJ Lab. Dibuat untuk belajar bersama.</span><span>Ilustrasi dibuat dengan SVG.</span></div></footer>
 
 <script>
 /* ===== Konfigurasi Supabase (isi dengan milikmu) ===== */
-const SB_URL = "";   // contoh: https://abcdxyz.supabase.co
-const SB_KEY = "";   // anon public key
+const SB_URL = "https://usisxfkbwoktoxdhkwrw.supabase.co";   // contoh: https://abcdxyz.supabase.co
+const SB_KEY = "sb_publishable_1JvsR_lG83pc5cCID4822A_o7PPTkI1";   // anon public key
 const C = f => "https://commons.wikimedia.org/wiki/Special:FilePath/" + f + "?width=900";
 const IMG = {
   rj45: C("Ethernet_RJ45_connector_p1160054.jpg"),
@@ -257,10 +284,28 @@ const LOCAL = [
  {kategori:"fisik",judul:"Crimping Kabel UTP",ringkasan:"Urutan warna T568A dan T568B, straight dan crossover, serta pengujian.",level:"Kelas X",gambar_url:IMG.crimp},
  {kategori:"fisik",judul:"Patch Panel dan Rak",ringkasan:"Terminasi kabel pada patch panel dan merapikan kabel di rak jaringan.",level:"Kelas XI",gambar_url:IMG.patch}
 ];
+
+/* ===== Ilustrasi SVG bawaan (tanpa internet) ===== */
+const V=b=>`<svg viewBox="0 0 400 240" preserveAspectRatio="xMidYMid slice"><rect width="400" height="240" fill="#0b0f06"/><path d="M0 200h400M0 160h400M0 120h400M0 80h400M0 40h400" stroke="#76b900" stroke-opacity=".07"/>${b}</svg>`;
+const col=["#f58a1f","#2fa84f","#1f6fe0","#7a4a22"];
+const ART={
+ rack:V([0,1,2,3,4].map(i=>`<rect x="100" y="${22+i*40}" width="200" height="32" fill="#161616" stroke="#3a3a3a"/><rect x="112" y="${30+i*40}" width="90" height="4" fill="#2a2a2a"/><rect x="112" y="${38+i*40}" width="60" height="4" fill="#2a2a2a"/>`+[0,1,2].map(j=>`<circle class="bk" style="animation-delay:${(i*3+j)*.23}s" cx="${262+j*12}" cy="${38+i*40}" r="3.5" fill="#76b900"/>`).join("")).join("")),
+ patch:V(`<rect x="36" y="64" width="328" height="64" fill="#161616" stroke="#4a4a4a"/>`+Array.from({length:12},(_,i)=>{const x=52+i*25,c=col[i%4];return `<rect x="${x}" y="78" width="18" height="24" fill="#000" stroke="#666"/><path d="M${x+9} 102C${x+9} 170 ${x+(i%2?40:-30)} 160 ${x+(i%2?60:-50)} 230" stroke="${c}" stroke-width="5" fill="none"/>`}).join("")),
+ rj45:V(`<rect x="130" y="56" width="140" height="112" rx="6" fill="#cfd4d8" fill-opacity=".12" stroke="#cfd4d8" stroke-width="2"/><rect x="176" y="150" width="48" height="26" fill="#cfd4d8" fill-opacity=".2" stroke="#cfd4d8"/>`+Array.from({length:8},(_,i)=>`<rect x="${141+i*15}" y="62" width="9" height="34" fill="#d4af37"/><path d="M${145.5+i*15} 168V232" stroke="${["#f9c68a","#f58a1f","#a6e0b4","#1f6fe0","#9dbdf0","#2fa84f","#c9a384","#7a4a22"][i]}" stroke-width="7"/>`).join("")),
+ crimp:V(`<path d="M80 120h150l30-34h46l-6 34 6 34h-46l-30-34" fill="#1d1d1d" stroke="#76b900" stroke-width="3"/><path d="M80 120L40 70M80 120L40 176" stroke="#76b900" stroke-width="14" stroke-linecap="round"/><rect x="248" y="110" width="60" height="20" fill="#76b900"/><rect x="214" y="110" width="26" height="20" fill="#000" stroke="#999"/>`),
+ utp:V(`<circle cx="200" cy="120" r="96" fill="#1a2b0a" stroke="#76b900" stroke-width="4"/>`+col.map((c,i)=>{const a=i*Math.PI/2+.6,x=200+Math.cos(a)*46,y=120+Math.sin(a)*46;return `<circle cx="${x-10}" cy="${y}" r="15" fill="${c}"/><circle cx="${x+10}" cy="${y}" r="15" fill="#f1f1f1"/><circle cx="${x-10}" cy="${y}" r="6" fill="#0b0f06"/><circle cx="${x+10}" cy="${y}" r="6" fill="#0b0f06"/>`}).join("")),
+ code:V(`<rect x="60" y="34" width="280" height="172" fill="#111" stroke="#3a3a3a"/><rect x="60" y="34" width="280" height="22" fill="#1d1d1d"/>`+[[90,60],[110,130],[110,90],[90,150],[110,110],[110,70],[90,40]].map((l,i)=>`<rect x="${78+(l[0]-90)}" y="${72+i*18}" width="${l[1]+40}" height="7" fill="${i%3?"#76b900":"#8a8a8a"}" fill-opacity=".8"/>`).join("")+`<rect class="bk" x="78" y="200" width="8" height="2" fill="#76b900"/>`),
+ term:V(`<rect x="50" y="40" width="300" height="160" fill="#080808" stroke="#3a3a3a"/><rect x="50" y="40" width="300" height="20" fill="#1d1d1d"/><text x="66" y="92" fill="#76b900" font-family="monospace" font-size="14">admin@server:~$ ls /var/www</text><text x="66" y="118" fill="#ccc" font-family="monospace" font-size="14">html  backup  logs</text><text x="66" y="144" fill="#76b900" font-family="monospace" font-size="14">admin@server:~$ _</text>`),
+ topo:V(`<g stroke="#76b900" stroke-width="2" stroke-opacity=".7"><path d="M200 120L90 56M200 120L310 56M200 120L90 184M200 120L310 184"/></g>`+[[90,56],[310,56],[90,184],[310,184]].map(p=>`<rect x="${p[0]-24}" y="${p[1]-16}" width="48" height="32" fill="#161616" stroke="#76b900"/>`).join("")+`<rect x="168" y="100" width="64" height="40" fill="#76b900"/><circle class="bk" cx="200" cy="120" r="4" fill="#000"/>`)
+};
+const DEF={jaringan:"topo",linux:"term",coding:"code",fisik:"rj45"};
+LOCAL.forEach(m => m.gambar_url = "");
+["topo","rack","term","rack","code","code","crimp","patch"].forEach((a,i) => LOCAL[i].art = a);
 const NAMA = {semua:"Semua",coding:"Coding",linux:"Linux",jaringan:"Jaringan",fisik:"Kabel & fisik"};
 const $ = s => document.querySelector(s);
-function pic(src, cap, cls){
+function pic(src, cap, cls, a){
   const d = document.createElement("div"); d.className = cls || "img"; d.dataset.cap = cap;
+  if(a && ART[a]) d.innerHTML = ART[a];
   if(src){ const i = new Image(); i.src = src; i.alt = cap; i.loading = "lazy"; i.onerror = () => i.remove(); d.append(i); }
   return d;
 }
@@ -270,7 +315,7 @@ function draw(){
   const g = $("#grid"); g.innerHTML = "";
   data.filter(m => filt === "semua" || m.kategori === filt).forEach((m,i) => {
     const c = document.createElement("article"); c.className = "card"; c.style.animationDelay = i*60 + "ms";
-    c.append(pic(m.gambar_url, NAMA[m.kategori]));
+    c.append(pic(m.gambar_url, NAMA[m.kategori], "img", m.art || DEF[m.kategori]));
     const t = document.createElement("div"); t.className = "tx";
     t.innerHTML = "<h3></h3><p></p><span class='lv'></span>";
     t.children[0].textContent = m.judul; t.children[1].textContent = m.ringkasan; t.children[2].textContent = m.level;
@@ -331,6 +376,79 @@ if(SB_URL && SB_KEY){
     log.insertAdjacentHTML("beforeend", "&gt; Selesai. Respons kembali lewat jalur yang sama."); pk.setAttribute("opacity", 0); busy = false;
   };
 })();
+/* ===== OSI 3D ===== */
+(function(){
+  const L=[[7,"Application","Data","HTTP, DNS, SSH. Tempat aplikasi seperti browser membuat permintaan halaman web."],
+   [6,"Presentation","Data","Format dan enkripsi data, misalnya TLS yang mengubah HTTP menjadi HTTPS."],
+   [5,"Session","Data","Membuka, menjaga, dan menutup sesi komunikasi antar dua perangkat."],
+   [4,"Transport","Segment","TCP atau UDP. Data dipecah jadi segmen dan diberi nomor port, misalnya 80 untuk web."],
+   [3,"Network","Packet","Alamat IP ditambahkan. Router bekerja di sini untuk memilih jalur."],
+   [2,"Data Link","Frame","Alamat MAC ditambahkan. Switch meneruskan frame berdasarkan alamat ini."],
+   [1,"Physical","Bits","Sinyal listrik di kabel UTP lewat konektor RJ45 yang kamu crimping."]];
+  const st=$("#stk"),sc=$("#sc"),oh=$("#oh"),op=$("#op"),od=$("#od"),P=[];
+  L.forEach(l=>{const d=document.createElement("div");d.className="pl";d.style.setProperty("--z",(l[0]-4)*54+"px");d.textContent="L"+l[0]+"  "+l[1];
+    d.onclick=()=>show(l,d,true);st.append(d);P[l[0]]=d;});
+  const pk=document.createElement("div");pk.className="pk3";st.append(pk);
+  function place(n,w){pk.style.transform="translateZ("+((n-4)*54+16)+"px)";pk.style.width=w+"px";pk.style.marginLeft=-w/2+"px";pk.style.marginTop="-15px";}
+  place(8,30);pk.style.opacity=0;
+  function show(l,d,pick){oh.textContent="Layer "+l[0]+": "+l[1];op.textContent=l[2];od.textContent=l[3];
+    if(pick) P.forEach(x=>x.classList.toggle("sel",x===d&&!x.classList.contains("sel")));}
+  sc.addEventListener("mousemove",e=>{const r=sc.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    st.style.transform="rotateX("+(60-y*34)+"deg) rotateZ("+(-38+x*46)+"deg)";});
+  sc.addEventListener("mouseleave",()=>st.style.transform="");
+  let busy=false;
+  $("#osend").onclick=async()=>{ if(busy) return; busy=true; P.forEach(x=>x.classList.remove("sel","on")); pk.style.opacity=1;
+    for(const l of L){ P.forEach(x=>x.classList.remove("on")); P[l[0]].classList.add("on"); place(l[0],30+(7-l[0])*17); show(l,P[l[0]],false);
+      await new Promise(r=>setTimeout(r,l[0]===7?900:850)); }
+    oh.textContent="Terkirim"; op.textContent="Bits"; od.textContent="Sinyal berjalan lewat kabel ke tujuan. Di sana prosesnya dibalik dari Layer 1 sampai Layer 7 sampai halaman web tampil.";
+    await new Promise(r=>setTimeout(r,900)); P.forEach(x=>x.classList.remove("on")); pk.style.opacity=0; place(8,30); busy=false; };
+})();
+/* ===== Globe jaringan ===== */
+(function(){
+  const cv=$("#gl"),x=cv.getContext("2d"),D=Math.PI/180;
+  const POLY=[[[70,-165],[72,-95],[60,-65],[47,-53],[30,-80],[25,-97],[16,-95],[8,-80],[18,-105],[32,-117],[48,-125],[60,-150]],
+   [[12,-72],[5,-52],[-7,-35],[-23,-42],[-40,-62],[-55,-68],[-45,-75],[-20,-70],[-5,-81],[8,-77]],
+   [[70,28],[60,30],[55,12],[44,28],[38,24],[36,-6],[43,-9],[50,-5],[58,5],[65,14]],
+   [[35,-6],[32,32],[12,43],[-2,42],[-26,33],[-35,20],[-17,12],[4,9],[5,-8],[20,-17]],
+   [[72,60],[72,140],[62,178],[50,140],[35,128],[22,120],[10,108],[1,104],[8,98],[22,90],[8,77],[25,57],[30,35],[40,28],[45,45],[55,60]],
+   [[5,95],[-6,106],[-8,115],[-9,125],[-1,135],[-3,141],[2,128],[1,118],[4,108]],
+   [[-11,131],[-12,142],[-25,153],[-38,147],[-35,117],[-22,114]]];
+  const CT=[["Jakarta",-6.2,106.8],["Singapura",1.35,103.8],["Tokyo",35.7,139.7],["Sydney",-33.9,151.2],["Mumbai",19.1,72.9],["Dubai",25.2,55.3],["Frankfurt",50.1,8.7],["London",51.5,-.1],["New York",40.7,-74],["San Francisco",37.8,-122.4],["Sao Paulo",-23.5,-46.6],["Johannesburg",-26.2,28]];
+  const ED=[[0,1],[1,2],[1,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,2],[8,10],[5,11],[1,3],[0,3],[10,7],[11,7]];
+  const ll=(a,o)=>{a*=D;o*=D;return[Math.cos(a)*Math.sin(o),Math.sin(a),Math.cos(a)*Math.cos(o)]};
+  const ins=(la,lo,p)=>{let c=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const[a,b]=p[i],[d,e]=p[j];if((a>la)!=(d>la)&&lo<(e-b)*(la-a)/(d-a)+b)c=!c}return c};
+  const PT=[];for(let i=0,N=3200;i<N;i++){const la=Math.asin(1-2*(i+.5)/N)/D,lo=((i*137.508)%360)-180;if(POLY.some(p=>ins(la,lo,p)))PT.push(ll(la,lo));}
+  const CV=CT.map(c=>ll(c[1],c[2]));
+  const AR=ED.map(e=>{const a=CV[e[0]],b=CV[e[1]],w=Math.acos(Math.min(1,a[0]*b[0]+a[1]*b[1]+a[2]*b[2])),r=[];
+    for(let k=0;k<=40;k++){const t=k/40,s1=Math.sin((1-t)*w)/Math.sin(w),s2=Math.sin(t*w)/Math.sin(w),h=1+.3*Math.sin(Math.PI*t)*Math.min(1,w/2);
+      r.push([(a[0]*s1+b[0]*s2)*h,(a[1]*s1+b[1]*s2)*h,(a[2]*s1+b[2]*s2)*h]);}return r;});
+  let rot=-106.8*D,tilt=.35,drag=false,lx=0,ly=0,on=false,f=0,w=0,R=0,PK=[];
+  const reduce=matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const T=v=>{const x1=v[0]*Math.cos(rot)+v[2]*Math.sin(rot),z1=-v[0]*Math.sin(rot)+v[2]*Math.cos(rot);
+    return[x1,v[1]*Math.cos(tilt)-z1*Math.sin(tilt),v[1]*Math.sin(tilt)+z1*Math.cos(tilt)];};
+  new IntersectionObserver(e=>on=e[0].isIntersecting).observe(cv);
+  function draw(){
+    const dpr=devicePixelRatio||1,cw=cv.clientWidth; if(cv.width!==Math.round(cw*dpr)){cv.width=cv.height=Math.round(cw*dpr);}
+    x.setTransform(dpr,0,0,dpr,0,0);w=cw;R=w*.38;const c=w/2;x.clearRect(0,0,w,w);
+    let g=x.createRadialGradient(c,c,R*.9,c,c,R*1.3);g.addColorStop(0,"rgba(118,185,0,.22)");g.addColorStop(1,"rgba(118,185,0,0)");x.fillStyle=g;x.fillRect(0,0,w,w);
+    g=x.createRadialGradient(c-R*.3,c-R*.3,R*.1,c,c,R);g.addColorStop(0,"#14240a");g.addColorStop(1,"#040604");
+    x.fillStyle=g;x.beginPath();x.arc(c,c,R,0,7);x.fill();x.strokeStyle="rgba(118,185,0,.4)";x.lineWidth=1.5;x.stroke();
+    x.fillStyle="#76b900";
+    PT.forEach(v=>{const p=T(v);if(p[2]>0){x.globalAlpha=.15+.6*p[2];x.fillRect(c+R*p[0]-1,c-R*p[1]-1,2,2);}});
+    x.globalAlpha=1;x.lineWidth=1.2;
+    AR.forEach(a=>{x.strokeStyle="rgba(118,185,0,.35)";x.beginPath();let pen=false;
+      a.forEach(v=>{const p=T(v);if(p[2]>0){const X=c+R*p[0],Y=c-R*p[1];pen?x.lineTo(X,Y):x.moveTo(X,Y);pen=true;}else pen=false;});x.stroke();});
+    CV.forEach(v=>{const p=T(v);if(p[2]>.05){const X=c+R*p[0],Y=c-R*p[1],k=(f%90)/90;
+      x.strokeStyle="rgba(200,255,61,"+(1-k)+")";x.beginPath();x.arc(X,Y,3+k*14,0,7);x.stroke();x.fillStyle="#c8ff3d";x.fillRect(X-3,Y-3,6,6);}});
+    if(f%55===0&&PK.length<7){const e=Math.floor(Math.random()*ED.length),d=Math.random()<.5;PK.push({e,t:0,d});
+      }
+    PK=PK.filter(p=>(p.t+=.012)<1);
+    PK.forEach(p=>{const a=AR[p.e];for(let k=0;k<6;k++){const tt=Math.max(0,p.t-k*.018),i=Math.round((p.d?1-tt:tt)*40),q=T(a[i]);
+      if(q[2]>0){x.fillStyle="rgba(200,255,61,"+(1-k/6)+")";x.shadowColor="#76b900";x.shadowBlur=k?0:14;x.beginPath();x.arc(c+R*q[0],c-R*q[1],k?2:3.6,0,7);x.fill();}}x.shadowBlur=0;});
+    f++;if(!reduce)rot+=.0035;
+  }
+  (function loop(){if(on)draw();requestAnimationFrame(loop);})();
+})();
 /* ===== Terminal mengetik ===== */
 (function(){
   const L = ["$ ssh admin@192.168.1.10","admin@server:~$ sudo apt install nginx -y","Setting up nginx ... selesai","admin@server:~$ systemctl status nginx","Active: active (running)","admin@server:~$ sudo ufw allow 80/tcp","Rule added","admin@server:~$ curl -I localhost","HTTP/1.1 200 OK"];
@@ -368,8 +486,8 @@ if(SB_URL && SB_KEY){
   place();
 })();
 /* ===== Galeri ===== */
-[[IMG.crimp,"Tang crimping RJ45"],[IMG.utp,"Kabel UTP Cat5e"],[IMG.rack,"Ruang server"],[IMG.patch,"Patch panel di rak"]].forEach(a => {
-  const s = document.createElement("div"); s.className = "shot"; s.append(pic(a[0], a[1], "img")); s.firstChild.style.height = "260px"; $("#gal").append(s); });
+[["crimp","Tang crimping RJ45"],["utp","Penampang kabel UTP"],["rack","Rak server"],["patch","Patch panel dan kabel"]].forEach(a => {
+  const s = document.createElement("div"); s.className = "shot"; s.append(pic("", a[1], "img", a[0])); $("#gal").append(s); });
 /* ===== Scroll: garis judul, angka, jalur belajar ===== */
 const io = new IntersectionObserver(es => es.forEach(e => { if(!e.isIntersecting) return; const t = e.target;
   if(t.tagName === "H2") t.classList.add("in");
