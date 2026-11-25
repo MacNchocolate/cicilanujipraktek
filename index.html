@@ -17,7 +17,7 @@ body{background:var(--bg);color:var(--t);font:400 17px/1.65 Barlow,Arial,sans-se
 a{color:inherit;text-decoration:none}
 img{display:block;max-width:100%}
 .w{max-width:1200px;margin:0 auto;padding:0 28px}
-section{padding:110px 0;position:relative}
+section{padding:110px 0;position:relative;z-index:1}
 h1,h2,h3{font-weight:800;line-height:1.05;letter-spacing:-.02em}
 h2{font-size:clamp(34px,5vw,58px);margin-bottom:18px;display:inline-block;position:relative;padding-bottom:16px}
 h2::after{content:"";position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--g);transition:width .9s cubic-bezier(.7,0,.2,1)}
@@ -38,7 +38,7 @@ nav ul a{padding:22px 0;border-bottom:3px solid transparent;transition:.2s}
 nav ul a:hover{border-color:var(--g)}
 @media(max-width:1020px){nav ul{display:none}}
 /* hero */
-#hero{min-height:100vh;display:flex;align-items:center;padding:90px 0 60px;overflow:hidden}
+#hero{position:relative;z-index:1;background:var(--bg);min-height:100vh;display:flex;align-items:center;padding:90px 0 60px;overflow:hidden}
 #net{position:absolute;inset:0;width:100%;height:100%}
 #hero::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 25% 50%,var(--vig),transparent 70%)}
 #hero .w{position:relative;z-index:2}
@@ -50,7 +50,7 @@ nav ul a:hover{border-color:var(--g)}
 .hl:nth-child(2) b{animation-delay:.15s}.hl:nth-child(3) b{animation-delay:.3s}
 @keyframes up{to{transform:none}}
 /* stats */
-.stats{border-block:1px solid var(--l);background:var(--p);padding:0}
+.stats{border-block:1px solid var(--l);background:var(--p);background:color-mix(in srgb,var(--p) 78%,transparent);padding:0}
 .stats .w{display:grid;grid-template-columns:repeat(4,1fr)}
 .stat{padding:38px 24px;border-left:1px solid var(--l)}.stat:first-child{border:0;padding-left:0}
 .stat b{font-size:clamp(34px,4.5vw,56px);color:var(--ga);font-weight:800;display:block;line-height:1}
@@ -76,7 +76,7 @@ html[data-theme=light] .img svg{filter:grayscale(1) invert(1) contrast(1.15)}
 /* split sections */
 .sp{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
 @media(max-width:900px){.sp{grid-template-columns:1fr}}
-.dark{background:var(--p)}
+.dark{background:var(--p);background:color-mix(in srgb,var(--p) 78%,transparent)}
 ul.ck{list-style:none;margin-top:22px}
 ul.ck li{padding:10px 0 10px 34px;border-bottom:1px solid var(--l);position:relative}
 ul.ck li::before{content:"";position:absolute;left:4px;top:19px;width:14px;height:8px;border-left:3px solid var(--g);border-bottom:3px solid var(--g);transform:rotate(-45deg)}
@@ -133,6 +133,18 @@ select:focus{outline:0;border-color:var(--g)}
 .ci p{margin-top:4px;word-break:break-word;white-space:pre-wrap}
 @media(max-width:1180px){nav ul{gap:18px;font-size:14px}}
 html[data-theme=light] #hero h1 em{background:#111;color:#fff;padding:0 .14em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+#ac{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.stats{position:relative;z-index:1}
+/* ikon matahari & bulan pada saklar */
+.sw{width:38px;height:66px}
+.sw::before,.sw::after{display:none}
+.sw .rk{height:24px}
+.sw .ic{position:absolute;left:50%;width:15px;height:15px;margin-left:-7.5px;color:var(--t);transition:opacity .35s,transform .6s cubic-bezier(.3,1.6,.5,1)}
+.sw .sun{top:6px;opacity:1}.sw .moon{bottom:6px;opacity:.28;transform:rotate(-30deg) scale(.85)}
+html[data-theme=dark] .sw .sun{opacity:.28;transform:scale(.85)}
+html[data-theme=dark] .sw .moon{opacity:1;transform:none}
+.sw .sun g{transform-origin:12px 12px;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
 /* terminal */
 .term{background:var(--bx);border:1px solid var(--bxl);box-shadow:var(--bxs)}
 .term .bar{display:flex;gap:7px;padding:12px 14px;background:var(--bx2)}.term .bar i{width:11px;height:11px;border-radius:50%;background:var(--bx3)}
@@ -170,18 +182,19 @@ form{display:grid;gap:14px;max-width:560px}
 input,textarea{background:var(--ib);border:1px solid var(--l);color:var(--t);padding:14px;font:17px Barlow;border-radius:0;transition:border-color .2s}
 input:focus,textarea:focus{outline:0;border-color:var(--g)}
 #fm{color:var(--ga);min-height:26px}
-footer{border-top:1px solid var(--l);padding:46px 0;color:var(--m);font-size:15px}
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--l);padding:46px 0;color:var(--m);font-size:15px}
 footer .w{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px}
 :focus-visible{outline:2px solid var(--g);outline-offset:3px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.hl b{transform:none}}
 </style>
 </head>
 <body>
+<canvas id="ac" aria-hidden="true"></canvas>
 
 <nav><div class="w">
   <a href="#hero" class="logo"><i></i>TKJ Lab</a>
   <ul><li><a href="#materi">Materi</a></li><li><a href="#jaringan">Jaringan</a></li><li><a href="#osi">OSI 3D</a></li><li><a href="#linux">Linux</a></li><li><a href="#coding">Coding</a></li><li><a href="#kabel">Kabel LAN</a></li><li><a href="#galeri">Praktik</a></li><li><a href="#diskusi">Diskusi</a></li></ul>
-  <div class="navr"><button class="sw" id="sw" role="switch" aria-checked="true" aria-label="Matikan lampu (mode gelap)" title="Saklar lampu"><span class="rk"></span></button><a href="#saran" class="btn" style="padding:9px 22px;font-size:15px"><span>Kirim saran</span></a></div>
+  <div class="navr"><button class="sw" id="sw" role="switch" aria-checked="true" aria-label="Matikan lampu (mode gelap)" title="Saklar lampu"><svg class="ic sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><g stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2.5v2.6M12 18.9v2.6M2.5 12h2.6M18.9 12h2.6M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></g></svg><span class="rk"></span><svg class="ic moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.8 8.8 0 0 1 9.8 3.5a9 9 0 1 0 10.7 10.7z" fill="currentColor"/></svg></button><a href="#saran" class="btn" style="padding:9px 22px;font-size:15px"><span>Kirim saran</span></a></div>
 </div></nav>
 
 <header id="hero">
@@ -508,6 +521,52 @@ if(SB_URL && SB_KEY){
     f++;if(!reduce)rot+=.0035;
   }
   (function loop(){if(on)draw();requestAnimationFrame(loop);})();
+})();
+/* ===== Latar bergaya loading screen Animus: lanskap kawat, kabut, serpihan ===== */
+(function(){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;
+  const BIRU=false; /* true = warna biru seperti di video (mode gelap) */
+  const cv=$("#ac"),x=cv.getContext("2d"),hero=$("#hero"),ft=document.querySelector("footer");
+  const R=34,C=60,K=2*C+1,cell=.7,zN=1.2,X=new Float32Array((R+1)*K),Y=new Float32Array((R+1)*K);let W,H;
+  const SH=Array.from({length:16},()=>({x:Math.random(),y:Math.random(),z:.3+Math.random()*.9,a:Math.random()*6.28,r:5+Math.random()*9,s:.2+Math.random()*.5,v:(Math.random()-.5)*.012}));
+  const FG=Array.from({length:7},()=>({x:Math.random(),y:Math.random(),v:.00004+Math.random()*.00008,s:.6+Math.random()*.7,p:Math.random()*6.28}));
+  const sprite=c=>{const o=document.createElement("canvas");o.width=o.height=256;const g=o.getContext("2d"),r=g.createRadialGradient(128,128,0,128,128,128);
+    r.addColorStop(0,"rgba("+c+",1)");r.addColorStop(1,"rgba("+c+",0)");g.fillStyle=r;g.fillRect(0,0,256,256);return o;};
+  const PD=BIRU?{l:"120,190,255",d:"205,235,255",g:"40,130,255"}:{l:"159,224,0",d:"225,255,130",g:"118,185,0"},PL={l:"0,0,0",d:"0,0,0",g:"0,0,0"};
+  const SPR={1:sprite(PD.g),0:sprite("0,0,0")};
+  function size(){const r=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*r;cv.height=H*r;x.setTransform(r,0,0,r,0,0);}
+  size();addEventListener("resize",size);
+  const hf=(w,j,t)=>.55*Math.sin(w*.5+j*.28+t*.4)+.35*Math.sin(w*1.2-j*.6-t*.5)+.25*Math.sin(w*.25+j*1.1+t*.3)+.15*Math.sin(w*2.6+j*1.7+t*.8);
+  (function loop(ts){
+    requestAnimationFrame(loop);
+    if(hero.getBoundingClientRect().bottom>H||ft.getBoundingClientRect().top<0)return;
+    const t=ts/1000,dk=document.documentElement.dataset.theme==="dark",P=dk?PD:PL,sc=dk?1:.75;
+    const y0=H*.58,F=H*.6,cx=W/2+Math.sin(t*.15)*W*.04,T=t*.7,n=Math.floor(T),fr=T-n,sy=scrollY;
+    x.clearRect(0,0,W,H);
+    /* kabut + cahaya horizon */
+    x.globalCompositeOperation=dk?"lighter":"source-over";
+    FG.forEach(f=>{const px=((f.x+t*f.v*60)%1.4-.2)*W,py=y0-H*(.06+f.y*.24),z=H*.75*f.s;
+      x.globalAlpha=(dk?.2:.07)*(.6+.4*Math.sin(t*.4+f.p));x.drawImage(SPR[+dk],px-z/2,py-z/2,z,z);});
+    x.globalAlpha=dk?.5:.1;x.drawImage(SPR[+dk],0,y0-H*.16,W,H*.3);
+    x.globalCompositeOperation="source-over";x.globalAlpha=1;x.lineWidth=1;
+    /* titik simpul lanskap */
+    const A=new Float32Array(R+1);
+    for(let k=0;k<=R;k++){const z=zN+k-fr,j=k+n,s=F/z;A[k]=Math.pow(Math.max(0,1-(z-zN)/R),1.1)*Math.min(1,(z-zN)/1.2);
+      for(let c=-C;c<=C;c++){const i=k*K+c+C;X[i]=cx+c*cell*s;Y[i]=y0+1.1*s-hf(c*cell,j,t)*.24*s;}}
+    /* garis mendatar bergelombang */
+    for(let k=0;k<=R;k++){x.strokeStyle="rgba("+P.l+","+(A[k]*.55*sc).toFixed(3)+")";x.beginPath();x.moveTo(X[k*K],Y[k*K]);
+      for(let c=1;c<K;c++)x.lineTo(X[k*K+c],Y[k*K+c]);x.stroke();}
+    /* garis ke arah kedalaman */
+    for(let k=0;k<R;k++){x.strokeStyle="rgba("+P.l+","+(A[k+1]*.35*sc).toFixed(3)+")";x.beginPath();
+      for(let c=0;c<K;c+=3){x.moveTo(X[k*K+c],Y[k*K+c]);x.lineTo(X[(k+1)*K+c],Y[(k+1)*K+c]);}x.stroke();}
+    /* titik berkilau */
+    for(let k=0;k<=R;k++){const j=k+n,z=zN+k-fr,sz=1+2.4/z;x.fillStyle="rgba("+P.d+","+(A[k]*.9*sc).toFixed(3)+")";x.beginPath();
+      for(let c=-C;c<=C;c+=3)if(Math.sin(t*3+c*12.9+j*78.2)>-.2)x.rect(X[k*K+c+C]-sz/2,Y[k*K+c+C]-sz/2,sz,sz);x.fill();}
+    /* serpihan segitiga melayang */
+    SH.forEach(h=>{h.a+=h.v;const px=((h.x+t*.004*h.s)%1.1-.05)*W,py=((h.y*y0-sy*.12*h.z+Math.sin(t*.3+h.a)*10)%y0+y0)%y0;
+      x.save();x.translate(px,py);x.rotate(h.a);x.fillStyle="rgba("+P.d+","+((dk?.3:.22)*(.6+.4*Math.sin(t+h.r))).toFixed(3)+")";
+      x.beginPath();x.moveTo(0,-h.r);x.lineTo(h.r*.9,h.r*.6);x.lineTo(-h.r*.8,h.r*.7);x.closePath();x.fill();x.restore();});
+  })(0);
 })();
 /* ===== Terminal mengetik ===== */
 (function(){
